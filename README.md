@@ -8,7 +8,7 @@ Projet de tests fonctionnels UI avec Selenium WebDriver pour l'application Green
 - **Maven 3.6+**
 - **Chrome Browser** (dernière version)
 - **Backend Spring Boot** démarré sur `http://localhost:8080`
-- **Frontend Angular** démarré sur `http://localhost:4200`
+- **Frontend Flutter Web** démarré sur `http://localhost:5000` (ou port configuré)
 
 ## 🚀 Démarrage Rapide
 
@@ -21,14 +21,14 @@ mvn spring-boot:run
 
 Vérifiez que le backend est accessible : http://localhost:8080
 
-### 2. Démarrer le Frontend
+### 2. Démarrer le Frontend Flutter Web
 
 ```powershell
-cd C:\Users\ABDO EL IDRISSI\Desktop\greenFund-angular\greenFund-angular
-npm start
+cd C:\Users\ABDO EL IDRISSI\Desktop\GreenFund
+flutter run -d chrome
 ```
 
-Par défaut, Angular démarre sur **http://localhost:4200**
+Par défaut, Flutter Web démarre sur **http://localhost:5000** (ou le port indiqué dans la console)
 
 ### 3. Exécuter les Tests
 
@@ -81,7 +81,10 @@ L'utilisateur admin est créé automatiquement par le backend via `DataInitializ
 - **Mot de passe** : `admin123`
 - **Rôle** : `ADMIN`
 
-**Note** : Si l'utilisateur n'existe pas, il sera créé au premier démarrage du backend.
+**Note** : 
+- Si l'utilisateur n'existe pas, il sera créé au premier démarrage du backend.
+- Pour créer un projet (tests de création), vous aurez besoin d'un utilisateur avec le rôle `OWNER`.
+- Vous pouvez créer un utilisateur OWNER via l'API d'inscription du backend.
 
 ## 🧪 Tests Disponibles
 
@@ -116,8 +119,11 @@ Format : `{TestName}_{Timestamp}.png`
 Les URLs sont configurées dans `BaseTest.java` :
 
 ```java
-protected static final String BASE_URL = "http://localhost:4200";
+protected static final String BASE_URL = "http://localhost:5000"; // Flutter Web
+// Pour Angular, utilisez : "http://localhost:4200"
 ```
+
+**Note** : Si Flutter Web utilise un autre port, modifiez `BASE_URL` dans `BaseTest.java`.
 
 ### Timeouts
 
@@ -163,13 +169,14 @@ mvn clean test
 ### Problème : Tests échouent avec "Connection refused"
 **Solution** : Vérifiez que le backend et le frontend sont démarrés :
 - Backend : http://localhost:8080
-- Frontend : http://localhost:4200
+- Frontend Flutter Web : http://localhost:5000 (ou le port indiqué)
 
 ### Problème : Tests échouent avec "Element not found"
 **Solution** : 
-1. Vérifiez que le frontend a bien les `data-testid` ajoutés
-2. Vérifiez que la page est complètement chargée
-3. Augmentez les timeouts si nécessaire
+1. **Pour Flutter Web** : Vérifiez que les widgets ont des `Key` définis (voir `login_screen.dart`, `register_screen.dart`, etc.)
+2. Flutter Web peut prendre plus de temps à charger - augmentez les timeouts si nécessaire
+3. Vérifiez que la page est complètement chargée (Flutter Web utilise un chargement progressif)
+4. Les sélecteurs Flutter utilisent `data-flutter-key` dans le DOM
 
 ### Problème : Chrome ne démarre pas
 **Solution** : 
@@ -190,6 +197,7 @@ Les résultats sont affichés dans la console Maven. Exemple :
 
 - **TEST_PLAN.md** : Plan de tests détaillé avec tous les scénarios
 - **GUIDE_CAPTURES_SELENIUM.md** : Guide pour capturer les screenshots du rapport
+- **README_FLUTTER.md** : Guide spécifique pour adapter les tests à Flutter Web
 
 ## 🔄 Intégration CI/CD
 
